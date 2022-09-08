@@ -177,29 +177,27 @@ void st7789_init(const struct st7789_config *config, uint16_t width, uint16_t he
     st7789_cmd(0x29, NULL, 0);
     sleep_ms(10);
 
-    gpio_init(st7789_cfg.gpio_bl);
-    gpio_set_dir(st7789_cfg.gpio_bl, GPIO_OUT);
-    gpio_set_mask(0x01 << st7789_cfg.gpio_bl);
+    //gpio_init(st7789_cfg.gpio_bl);
+    //gpio_set_dir(st7789_cfg.gpio_bl, GPIO_OUT);
+    //gpio_set_mask(0x01 << st7789_cfg.gpio_bl);
 
-    st7789_fill(0x0000);
-    //gpio_set_function(st7789_cfg.gpio_bl, GPIO_FUNC_PWM);
+    gpio_set_function(st7789_cfg.gpio_bl, GPIO_FUNC_PWM);
 
-    //uint slice_num = pwm_gpio_to_slice_num(st7789_cfg.gpio_bl);
+    uint slice_num = pwm_gpio_to_slice_num(st7789_cfg.gpio_bl);
 
-    //pwm_config cfg = pwm_get_default_config();
+    pwm_config cfg = pwm_get_default_config();
 
-    //pwm_config_set_clkdiv(&cfg, 4.f);
+    pwm_config_set_clkdiv(&cfg, 4.f);
 
-    //pwm_init(slice_num, &cfg, true);
+    pwm_init(slice_num, &cfg, true);
 
-    // Set period of 4 cycles (0 to 3 inclusive)
-    //pwm_set_wrap(slice_num, 4);
+    pwm_set_wrap(slice_num, 2);
     // Set channel A output high for one cycle before dropping
-    //pwm_set_chan_level(slice_num, PWM_CHAN_A, 2);
+    pwm_set_chan_level(slice_num, PWM_CHAN_A, 2);
     // Set initial B output high for three cycles before dropping
-    //pwm_set_chan_level(slice_num, PWM_CHAN_B, 2);
+    pwm_set_chan_level(slice_num, PWM_CHAN_B, 2);
     // Set the PWM running
-    //pwm_set_enabled(slice_num, true);
+    pwm_set_enabled(slice_num, true);
 }
 
 void st7789_ramwr()

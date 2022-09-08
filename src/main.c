@@ -137,21 +137,6 @@ void fft(complex *dat, const complex *w, uint32_t k)
     }
 }
 
-void setLDO(int gpio, int count)
-{
-    gpio_init(gpio);
-    gpio_set_dir(gpio, GPIO_OUT);
-    gpio_clr_mask(0x01 << gpio);
-    sleep_ms(5);
-    for (int i = 0; i < count; i++)
-    {
-        gpio_set_mask(0x01 << gpio);
-        sleep_us(200);
-        gpio_clr_mask(0x01 << gpio);
-        sleep_us(200);
-    }
-    gpio_set_mask(0x01 << gpio);
-}
 
 void initADC()
 {
@@ -461,12 +446,65 @@ int main()
 
     lv_obj_t *screen = lv_scr_act();
 
+/*
+	lv_obj_t *screen_bar_1 = lv_bar_create(screen);
+
+	//Write style LV_BAR_PART_BG for screen_bar_1
+	static lv_style_t style_screen_bar_1_bg;
+	lv_style_reset(&style_screen_bar_1_bg);
+
+	//Write style state: LV_STATE_DEFAULT for style_screen_bar_1_bg
+	lv_style_set_radius(&style_screen_bar_1_bg, 10);
+	lv_style_set_bg_color(&style_screen_bar_1_bg, lv_color_make(0xd4, 0xd7, 0xd9));
+	lv_style_set_bg_grad_color(&style_screen_bar_1_bg, lv_color_make(0xd4, 0xd7, 0xd9));
+	lv_style_set_bg_grad_dir(&style_screen_bar_1_bg,  LV_GRAD_DIR_VER);
+	lv_style_set_bg_opa(&style_screen_bar_1_bg, 255);
+	lv_style_set_pad_left(&style_screen_bar_1_bg, 0);
+	lv_style_set_pad_right(&style_screen_bar_1_bg, 0);
+	lv_style_set_pad_top(&style_screen_bar_1_bg, 0);
+	lv_style_set_pad_bottom(&style_screen_bar_1_bg, 0);
+	lv_obj_add_style(screen_bar_1, &style_screen_bar_1_bg,LV_PART_MAIN | LV_STATE_DEFAULT);
+
+	//Write style LV_BAR_PART_INDIC for screen_bar_1
+	static lv_style_t style_screen_bar_1_indic;
+	lv_style_reset(&style_screen_bar_1_indic);
+
+	//Write style state: LV_STATE_DEFAULT for style_screen_bar_1_indic
+	lv_style_set_radius(&style_screen_bar_1_indic, 10);
+	lv_style_set_bg_color(&style_screen_bar_1_indic, lv_color_make(0x01, 0xa2, 0xb1));
+	lv_style_set_bg_grad_color(&style_screen_bar_1_indic, lv_color_make(0x01, 0xa2, 0xb1));
+	lv_style_set_bg_grad_dir(&style_screen_bar_1_indic, LV_GRAD_DIR_VER);
+	lv_style_set_bg_opa(&style_screen_bar_1_indic, 255);
+	lv_obj_add_style(screen_bar_1, &style_screen_bar_1_indic ,LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_pos(screen_bar_1, 150, 160);
+	lv_obj_set_size(screen_bar_1, 269, 20);
+
+	//Write animation: screen_bar_1move in x direction
+	lv_anim_t screen_bar_1_x;
+	lv_anim_init(&screen_bar_1_x);
+	lv_anim_set_var(&screen_bar_1_x, screen_bar_1);
+	lv_anim_set_time(&screen_bar_1_x, 100);
+	lv_anim_set_exec_cb(&screen_bar_1_x, (lv_anim_exec_xcb_t)lv_obj_set_x);
+	lv_anim_set_values(&screen_bar_1_x, lv_obj_get_x(screen_bar_1), 0);
+	lv_anim_start(&screen_bar_1_x);
+
+	//Write animation: screen_bar_1move in y direction
+	lv_anim_t screen_bar_1_y;
+	lv_anim_init(&screen_bar_1_y);
+	lv_anim_set_var(&screen_bar_1_y, screen_bar_1);
+	lv_anim_set_time(&screen_bar_1_y, 100);
+	lv_anim_set_exec_cb(&screen_bar_1_y, (lv_anim_exec_xcb_t)lv_obj_set_y);
+	lv_anim_set_values(&screen_bar_1_y, lv_obj_get_y(screen_bar_1), 0);
+	lv_anim_start(&screen_bar_1_y);
+
+*/
+
     chart = lv_chart_create(lv_scr_act());
     lv_obj_set_pos(chart, 0, 0);
     lv_obj_set_size(chart, 215, 145);
     lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, 0, 4095);
     lv_obj_set_style_size(chart, 0, LV_PART_INDICATOR);
-    lv_chart_set_div_line_count(chart, 3, 9);
+    lv_chart_set_div_line_count(chart, 4, 9);
     ser = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_ORANGE), LV_CHART_AXIS_PRIMARY_Y);
 
     static lv_style_t style_screen_chart_1_main_main_default;
@@ -549,6 +587,7 @@ int main()
     lv_obj_set_size(screen_label_8, 80, 15);
     lv_label_set_long_mode(screen_label_8, LV_LABEL_LONG_CLIP);
     lv_obj_set_style_text_align(screen_label_8, LV_TEXT_ALIGN_CENTER, 0);
+    lv_label_set_text(screen_label_8, "SoftVer 0.2");
 
     screen_label_9 = lv_label_create(screen);
     lv_obj_set_pos(screen_label_9, 234, 130);
